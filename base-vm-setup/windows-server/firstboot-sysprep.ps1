@@ -5,8 +5,8 @@
     Server golden image for ESXi deployment.
 
 .DESCRIPTION
-    Run this script ONCE on a fully configured Windows Server VM — after all
-    roles, features, updates, and software are installed — immediately before
+    Run this script ONCE on a fully configured Windows Server VM -- after all
+    roles, features, updates, and software are installed -- immediately before
     taking the final snapshot or exporting the VMDK.
 
     What it does:
@@ -50,7 +50,7 @@
     .\Prepare-GoldenImage.ps1 -AdminPassword 'S3cur3P@ss!'
 
 .EXAMPLE
-    # Dry-run — write files only, skip sysprep:
+    # Dry-run -- write files only, skip sysprep:
     .\Prepare-GoldenImage.ps1 -SkipSysprep
 
 .NOTES
@@ -312,7 +312,7 @@ try {
         throw "Prefix '$prefix' is out of range (1-32)."
     }
     if ($hostname.Length -gt 15) {
-        Write-Host "    [WARN] Hostname '$hostname' exceeds 15 chars — NetBIOS name will be truncated." -ForegroundColor Yellow
+        Write-Host "    [WARN] Hostname '$hostname' exceeds 15 chars -- NetBIOS name will be truncated." -ForegroundColor Yellow
     }
 
     Write-OK "hostname   = $hostname"
@@ -330,7 +330,7 @@ try {
 
     $currentName = $env:COMPUTERNAME
     if ($currentName -eq $hostname) {
-        Write-OK "Hostname is already '$hostname' — skipping rename."
+        Write-OK "Hostname is already '$hostname' -- skipping rename."
     } else {
         Rename-Computer -NewName $hostname -Force
         Write-OK "Hostname changed from '$currentName' to '$hostname'"
@@ -342,7 +342,7 @@ try {
 
     Write-Step "Configuring network adapter"
 
-    # Find the first connected physical adapter — skip loopback/tunnels
+    # Find the first connected physical adapter -- skip loopback/tunnels
     $nic = Get-NetAdapter |
         Where-Object { $_.Status -eq 'Up' -and $_.InterfaceDescription -notmatch 'Loopback|Hyper-V|isatap|Teredo' } |
         Sort-Object -Property ifIndex |
@@ -388,7 +388,7 @@ try {
     $selfDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
     # Register cleanup as a scheduled task that fires once at next logon,
-    # after this script has already exited — we cannot delete ourselves
+    # after this script has already exited -- we cannot delete ourselves
     # while we are running.
     $cleanupScript = @"
 Remove-Item -Path '$($selfDir)\FirstBoot.ps1'   -Force -ErrorAction SilentlyContinue
@@ -410,7 +410,7 @@ Unregister-ScheduledTask -TaskName 'FirstBootCleanup' -Confirm:`$false -ErrorAct
     # 6. Reboot
     # -----------------------------------------------------------------------
 
-    Write-Step "Configuration complete — rebooting in 10 seconds"
+    Write-Step "Configuration complete -- rebooting in 10 seconds"
     Write-OK "Transcript saved to: $LogPath"
 
     Stop-Transcript
@@ -447,7 +447,7 @@ Write-Step "Setting ExecutionPolicy to RemoteSigned (machine scope)"
 
 $currentPolicy = Get-ExecutionPolicy -Scope LocalMachine
 if ($currentPolicy -in @('RemoteSigned', 'Unrestricted', 'Bypass')) {
-    Write-OK "Already set to $currentPolicy — no change needed"
+    Write-OK "Already set to $currentPolicy -- no change needed"
 } else {
     Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force
     Write-OK "ExecutionPolicy set to RemoteSigned"
@@ -479,7 +479,7 @@ $unattendXml = @"
 <unattend xmlns="urn:schemas-microsoft-com:unattend">
 
   <!--
-    oobeSystem pass — runs after Sysprep OOBE on first boot of deployed VM.
+    oobeSystem pass -- runs after Sysprep OOBE on first boot of deployed VM.
     Skips all interactive screens.
     Auto-logs on once so SetupComplete.cmd fires in a visible console session.
   -->
@@ -561,7 +561,7 @@ if ($SkipSysprep) {
 # 9. Final confirmation and Sysprep
 # ---------------------------------------------------------------------------
 
-Write-Step "Sysprep — POINT OF NO RETURN"
+Write-Step "Sysprep -- POINT OF NO RETURN"
 Write-Host ""
 Write-Host "  The VM will be generalized and shut down." -ForegroundColor Yellow
 Write-Host "  This action cannot be undone on this machine." -ForegroundColor Yellow
@@ -597,6 +597,6 @@ if ($proc.ExitCode -ne 0) {
     exit $proc.ExitCode
 }
 
-# If we reach here Sysprep ran cleanly — but the machine should be
+# If we reach here Sysprep ran cleanly -- but the machine should be
 # shutting down already (/shutdown flag). This line is a fallback.
 Write-OK "Sysprep completed. VM is shutting down."
