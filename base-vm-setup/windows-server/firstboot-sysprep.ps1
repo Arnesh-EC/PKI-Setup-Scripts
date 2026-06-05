@@ -499,7 +499,7 @@ $unattendXml = @"
 <unattend xmlns="urn:schemas-microsoft-com:unattend">
 
   <!--
-    oobeSystem pass -- runs after Sysprep OOBE on first boot of deployed VM.
+    oobeSystem pass: runs after Sysprep OOBE on first boot of deployed VM.
     Skips all interactive screens.
     Auto-logs on once so SetupComplete.cmd fires in a visible console session.
   -->
